@@ -15,14 +15,14 @@ function Login() {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:8000/",{
+            await axios.post("http://localhost:8000/login",{
                 email, password
             })
             .then(res => {
-                if(res.data=="exist"){
+                if(res.data === "exist"){
                     history("/home",{state:{id:email}})
                 }
-                else if(res.data=="notexist") {
+                else if(res.data === "notexist") {
                     alert("User have not sign up")
                 }
             })

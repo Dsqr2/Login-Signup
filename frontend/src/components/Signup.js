@@ -24,10 +24,10 @@ function Signup() {
                 email, password, confirmpassword
             })
             .then(res => {
-                if(res.data==="exist"){
-                    alert("User Already have an Account");
+                if(res.data === "exist"){
+                    alert(`${email} Already have an Account`);
                 }
-                else if(res.data==="notexist") {
+                else if(res.data === "notexist") {
                     history("/home",{state:{id:email}});
                 }
             })
