@@ -10,13 +10,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please add a Password']
-    },
-    confirmpassword: {
-        type: String,
-        required: true
     }
 })
 
 
-const collection = mongoose.model("collection",userSchema);
+const collection = mongoose.model("users",userSchema);
 module.exports = collection;

@@ -1,6 +1,6 @@
 const express = require("express")
 const collection = require("../models/model"); 
-const cors = require("cors");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 // router.get("/",cors(),(req,res) => {
@@ -17,20 +17,19 @@ router.post("/login", async(req,res) => {
     }
 
     try {
-        const check = await collection.findOne({email: email});
-        const checkPass = await collection.findOne({password: password});
-        
-        if(check) {
-            if(checkPass){
-                res.json("exist");
-            }
-            else{
-                res.json("wrongpassword");
-            }
+        const user = await collection.findOne({ email });
+
+        if (!user) {
+            return res.json("notexist");
         }
-        else {
-            res.json("notexist");
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.json("wrongpassword");
         }
+
+        res.json("exist");
     }
 
     catch(e) {
@@ -42,26 +41,30 @@ router.post("/login", async(req,res) => {
 router.post("/signup", async(req,res) => {
     const{email,password,confirmpassword} = req.body;
 
-    const data = {
-        email: email,
-        password: password,
-        confirmpassword: confirmpassword
-    }
 
     try {
-        const check = await collection.findOne({email: email});
-        
-        if(check) {
-            res.json("exist");
+        const user = await collection.findOne({ email });
+
+        // Hash the Password
+        const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            const newUser = new collection({
+                email,
+                password: hashedPassword
+            });
+
+        if (!user) {
+            
+            await newUser.save();
+            res.json("notexist");
         }
         else {
-            res.json("notexist");
-            await collection.insertMany([data])
+            res.json("exist");
+            
         }
-    }
-
-    catch(e) {
-        res.json("Not Exist");
+    } catch (e) {
+        res.json("");
     }
 })
 

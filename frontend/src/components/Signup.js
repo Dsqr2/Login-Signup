@@ -28,6 +28,7 @@ function Signup() {
                     alert(`${email} Already have an Account`);
                 }
                 else if(res.data === "notexist") {
+                    alert("Registered Succesfully!");
                     history("/home",{state:{id:email}});
                 }
             })
